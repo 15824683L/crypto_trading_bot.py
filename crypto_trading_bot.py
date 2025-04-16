@@ -12,11 +12,12 @@ TELEGRAM_BOT_TOKEN = "7615583534:AAHaKfWLN7NP83LdmR32i6BfNWqq73nBsAE"
 TELEGRAM_CHAT_ID = "8191014589"
 TELEGRAM_GROUP_CHAT_ID = "-1002689167916"
 
-# Binance API Setup
-exchange = ccxt.binance({
+# MEXC API Setup (Binance Alternative)
+exchange = ccxt.mexc({
     'enableRateLimit': True,
     'session': requests.Session(),
 })
+
 
 # List of Crypto Pairs to Scan
 CRYPTO_PAIRS = ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT"]
