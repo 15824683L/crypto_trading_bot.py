@@ -4,6 +4,9 @@ import pandas as pd
 import ccxt
 from datetime import datetime
 import traceback
+from datetime import datetime, time
+import pytz
+import time as t
 from keep_alive import keep_alive
 keep_alive()
 
@@ -118,48 +121,70 @@ def check_tp_sl():
                     del active_trades[pair]
 
 # Main Trading Loop
+# IST timezone setup
+IST = pytz.timezone('Asia/Kolkata')
+
+def is_active_time():
+    now = datetime.now(IST).time()
+
+    # Active time ranges
+    session1_start = time(13, 30)  # 1:30 PM
+    session1_end = time(15, 30)    # 3:30 PM
+
+    session2_start = time(18, 30)  # 6:30 PM
+    session2_end = time(20, 30)    # 8:30 PM
+
+    return (session1_start <= now <= session1_end) or (session2_start <= now <= session2_end)
+
+# ✅ Main Bot Loop with Time Check
 while True:
-    signal_found = False
+    if is_active_time():
+        print("✅ Bot cholche (Active Session) -", datetime.now(IST).strftime('%I:%M:%S %p'))
 
-    for pair in CRYPTO_PAIRS:
-        if pair in active_trades:
-            continue  # Skip duplicate signal
+        signal_found = False
 
-        for label, tf in timeframes.items():
-            df = fetch_data(pair, tf)
-            time.sleep(1)
-            if df is not None:
-                signal, entry, sl, tp, tsl, emoji = liquidity_grab_order_block(df)
-                if signal != "NO SIGNAL":
-                    signal_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                    msg = (
-                        f"{emoji} *{signal} Signal for {pair}*\nType: {label}\nTimeframe: {tf}\n"
-                        f"Time: `{signal_time}`\nEntry: `{entry}`\nSL: `{sl}`\nTP: `{tp}`\nTSL: `{tsl}`"
-                    )
-                    send_telegram_message(msg, TELEGRAM_CHAT_ID)
-                    send_telegram_message(msg, TELEGRAM_GROUP_CHAT_ID)
+        for pair in CRYPTO_PAIRS:
+            if pair in active_trades:
+                continue
 
-                    active_trades[pair] = {
-                        "signal_time": signal_time,
-                        "entry": entry,
-                        "sl": sl,
-                        "tp": tp,
-                        "direction": signal
-                    }
-                    signal_found = True
-                    break
-        if signal_found:
-            break
+            for label, tf in timeframes.items():
+                df = fetch_data(pair, tf)
+                time.sleep(1)
+                if df is not None:
+                    signal, entry, sl, tp, tsl, emoji = liquidity_grab_order_block(df)
+                    if signal != "NO SIGNAL":
+                        signal_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        msg = (
+                            f"{emoji} *{signal} Signal for {pair}*\nType: {label}\nTimeframe: {tf}\n"
+                            f"Time: `{signal_time}`\nEntry: `{entry}`\nSL: `{sl}`\nTP: `{tp}`\nTSL: `{tsl}`"
+                        )
+                        send_telegram_message(msg, TELEGRAM_CHAT_ID)
+                        send_telegram_message(msg, TELEGRAM_GROUP_CHAT_ID)
 
-    # Check TP/SL
-    check_tp_sl()
+                        active_trades[pair] = {
+                            "signal_time": signal_time,
+                            "entry": entry,
+                            "sl": sl,
+                            "tp": tp,
+                            "direction": signal
+                        }
+                        signal_found = True
+                        break
+            if signal_found:
+                break
 
-    # No Signal Alert
-    if not signal_found and (time.time() - last_signal_time) > 3600:
-        send_telegram_message("⚠️ No Signal in the Last 1 Hour", TELEGRAM_CHAT_ID)
-        send_telegram_message("⚠️ No Signal in the Last 1 Hour", TELEGRAM_GROUP_CHAT_ID)
-        last_signal_time = time.time()
+        # TP/SL Check
+        check_tp_sl()
 
-    # Wait before next round
-    time.sleep(60)
+        # No Signal Alert
+        if not signal_found and (time.time() - last_signal_time) > 3600:
+            send_telegram_message("⚠️ No Signal in the Last 1 Hour", TELEGRAM_CHAT_ID)
+            send_telegram_message("⚠️ No Signal in the Last 1 Hour", TELEGRAM_GROUP_CHAT_ID)
+            last_signal_time = time.time()
+
+    else:
+        print("⏸️ Bot bondho ache (Outside Session) -", datetime.now(IST).strftime('%I:%M:%S %p'))
+
+    time.sleep(60)  # 1 minute wait before checking again
+
 print("Bot is running 24/7!")
