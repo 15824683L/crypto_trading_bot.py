@@ -19,13 +19,7 @@ exchange = ccxt.mexc({
 })
 
 
-# List of Crypto Pairs to Scan
-CRYPTO_PAIRS = ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT"]
 
-# Timeframes
-timeframes = {"Scalping": "5m", "Intraday": "15m", "Swing": "4h"}
-
-# Active Trade Tracker
 active_trades = {}
 last_signal_time = time.time()
 
@@ -123,14 +117,13 @@ def check_tp_sl():
 
 # Main Trading Loop
 
-CRYPTO_SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "ADAUSDT"]
+CRYPTO_SYMBOLS = ["BTC/USDT", "ETH/USDT", "BNB/USDT", "XRP/USDT", "ADA/USDT"]
 timeframes = {
-    "Intraday 15m": Client.KLINE_INTERVAL_15MINUTE,
-    "Intraday 30m": Client.KLINE_INTERVAL_30MINUTE,
-    "Swing": Client.KLINE_INTERVAL_1HOUR,
-    "Position": Client.KLINE_INTERVAL_1DAY
+    "Intraday 15m": '15m',
+    "Intraday 30m": '30m',
+    "Swing": '1h',
+    "Position": '1d'
 }
-
 active_trades = {}
 last_signal_time = time.time()
 
