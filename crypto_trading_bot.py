@@ -20,7 +20,7 @@ exchange = ccxt.mexc({
 
 
 # List of Crypto Pairs to Scan
-CRYPTO_PAIRS = ["BTC/USDT", "ETH/USDT"]
+CRYPTO_PAIRS =  ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT"]
 
 # Timeframes
 timeframes = {"Scalping": "5m", "Intraday": "15m", "Swing": "4h"}
