@@ -10,7 +10,7 @@ keep_alive()
 # Telegram Bot Configuration
 TELEGRAM_BOT_TOKEN = "7615583534:AAHaKfWLN7NP83LdmR32i6BfNWqq73nBsAE"
 TELEGRAM_CHAT_ID = "8191014589"
-TELEGRAM_GROUP_CHAT_ID = "@tradealertcrypto"
+TELEGRAM_GROUP_CHAT_ID = ""
 
 # MEXC API Setup (Binance Alternative)
 exchange = ccxt.mexc({
@@ -20,7 +20,7 @@ exchange = ccxt.mexc({
 
 
 # List of Crypto Pairs to Scan
-CRYPTO_PAIRS =  ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT"]
+CRYPTO_PAIRS = ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT"]
 
 # Timeframes
 timeframes = {"Scalping": "5m", "Intraday": "15m", "Swing": "4h"}
