@@ -11,9 +11,9 @@ keep_alive()
 
 # Telegram Bot Configuration
 
-TELEGRAM\_BOT\_TOKEN = "7615583534\:AAHaKfWLN7NP83LdmR32i6BfNWqq73nBsAE"
-TELEGRAM\_CHAT\_ID = "8191014589"
-TELEGRAM\_GROUP\_CHAT\_ID = "@TradeAlertcrypto"
+TELEGRAM_BOT_TOKEN = "7615583534\:AAHaKfWLN7NP83LdmR32i6BfNWqq73nBsAE"
+TELEGRAM_CHAT_ID = "8191014589"
+TELEGRAM_GROUP_CHAT_ID = "@TradeAlertcrypto"
 
 # MEXC API Setup (Binance Alternative)
 
@@ -24,9 +24,9 @@ exchange = ccxt.mexc({
 
 # Function to Send Telegram Message
 
-def send\_telegram\_message(message, chat\_id):
-url = f"[https://api.telegram.org/bot{TELEGRAM\_BOT\_TOKEN}/sendMessage](https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage)"
-data = {"chat\_id": chat\_id, "text": message, "parse\_mode": "Markdown"}
+def send_telegram_message(message, chat_id):
+url = f"[https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage](https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage)"
+data = {"chat_id": chat_id, "text": message, "parse_mode": "Markdown"}
 try:
 requests.post(url, data=data)
 except Exception as e:
@@ -34,24 +34,24 @@ print("Telegram Error:", e)
 
 # Fetch OHLCV Data
 
-def fetch\_data(symbol, interval, lookback):
+def fetch_data(symbol, interval, lookback):
 since = exchange.parse8601(lookback)
-ohlcv = exchange.fetch\_ohlcv(symbol, interval, since=since)
+ohlcv = exchange.fetch_ohlcv(symbol, interval, since=since)
 df = pd.DataFrame(ohlcv, columns=[
 'timestamp', 'open', 'high', 'low', 'close', 'volume'
 ])
-df['timestamp'] = pd.to\_datetime(df['timestamp'], unit='ms')
-df.set\_index('timestamp', inplace=True)
+df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+df.set_index('timestamp', inplace=True)
 df = df.astype(float)
 return df
 
 # Strategy: Liquidity Grab + Order Block
 
-def liquidity\_grab\_order\_block(df):
-df['high\_shift'] = df['high'].shift(1)
-df['low\_shift'] = df['low'].shift(1)
-liquidity\_grab = (df['high'] > df['high\_shift']) & (df['low'] < df['low\_shift'])
-order\_block = df['close'] > df['open']
+def liquidity_grab_order_block(df):
+df['high_shift'] = df['high'].shift(1)
+df['low_shift'] = df['low'].shift(1)
+liquidity_grab = (df['high'] > df['high_shift']) & (df['low'] < df['low_shift'])
+order_block = df['close'] > df['open']
 
 ```
 if liquidity_grab.iloc[-1] and order_block.iloc[-1]:
@@ -71,14 +71,14 @@ return "NO SIGNAL", None, None, None, None, None
 
 # Function to Check TP or SL Hit
 
-def check\_tp\_sl():
-global active\_trades
-for pair, trade in list(active\_trades.items()):
-df = fetch\_data(pair, '1m', '2 days ago UTC')
+def check_tp_sl():
+global active_trades
+for pair, trade in list(active_trades.items()):
+df = fetch_data(pair, '1m', '2 days ago UTC')
 if df is not None:
-last\_price = df['close'].iloc[-1]
-now\_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-signal\_time = trade.get("signal\_time", "N/A")
+last_price = df['close'].iloc[-1]
+now_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+signal_time = trade.get("signal\_time", "N/A")
 
 ```
         if trade['direction'] == "BUY":
@@ -128,11 +128,11 @@ timeframes = {
 "Position": '1d'
 }
 
-active\_trades = {}
-last\_signal\_time = time.time()
+active_trades = {}
+last_signal_time = time.time()
 
 while True:
-signal\_found = False
+signal_found = False
 
 ```
 for symbol in CRYPTO_SYMBOLS:
