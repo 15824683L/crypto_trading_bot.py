@@ -4,9 +4,10 @@ import pandas as pd
 import ccxt
 from datetime import datetime
 import traceback
-from keep\_alive import keep\_alive
+from keep_alive import keep_alive
 
-keep\_alive()
+
+keep_alive()
 
 # Telegram Bot Configuration
 
