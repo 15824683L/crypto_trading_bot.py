@@ -24,8 +24,14 @@ exchange = ccxt.mexc({
 
 # Function to Send Telegram Message
 
-def send_telegram_message(message, chat_id):
-url = f"[https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage](https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage)"
+def send_telegram_alert(message):
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    data = {
+        "chat_id": TELEGRAM_CHAT_ID,
+        "text": message
+    }
+    requests.post(url, data=data)
+
 data = {"chat_id": chat_id, "text": message, "parse_mode": "Markdown"}
 try:
 requests.post(url, data=data)
